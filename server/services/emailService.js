@@ -58,6 +58,9 @@ const sendOtpEmail = async (to, otp) => {
         console.error('Error sending OTP email:', error);
         if (error.response) {
             console.error(error.response.body);
+            if (error.response.body.errors && error.response.body.errors.length > 0) {
+                throw new Error(error.response.body.errors[0].message);
+            }
         }
         throw error;
     }
