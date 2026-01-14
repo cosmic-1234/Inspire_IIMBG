@@ -3,6 +3,7 @@ import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
 import { Link } from 'react-router-dom';
 import { Mail, Lock, ArrowRight } from 'lucide-react';
+import api from '../api/axios';
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -19,17 +20,12 @@ const Login = () => {
         try {
             // In a real app, you'd use a context or redux to store the user
             // For this MVP, we'll just rely on the cookie set by the backend
-            const response = await fetch('http://localhost:5000/api/auth/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password }),
-            });
+            const response = await api.post('/auth/login', { email, password });
 
-            const data = await response.json();
+            const data = response.data;
 
-            if (!response.ok) {
-                throw new Error(data.message || 'Login failed');
-            }
+            // Axios throws an error for non-2xx responses, so we don't need manual check
+            // if (!response.ok) ...
 
             // Save token to localStorage
             if (data.token) {
@@ -47,7 +43,7 @@ const Login = () => {
 
         } catch (err) {
             console.error(err);
-            setError(err.message);
+            setError(err.response?.data?.message || err.message || 'Login failed');
         } finally {
             setLoading(false);
         }

@@ -138,7 +138,7 @@ const AdminDashboard = () => {
                                             )}
                                             {app.submission_data?.pitch_deck_url && (
                                                 <a
-                                                    href={`http://localhost:5000${app.submission_data.pitch_deck_url}`}
+                                                    href={`${(api.defaults.baseURL || 'http://localhost:5000/api').replace('/api', '')}${app.submission_data.pitch_deck_url}`}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
                                                     className="p-1 text-blue-600 hover:bg-blue-50 rounded"
