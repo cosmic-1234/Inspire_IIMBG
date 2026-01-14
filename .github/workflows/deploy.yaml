@@ -119,6 +119,7 @@ jobs:
             DATABASE_URL=${{ secrets.DB_URL }}
             JWT_SECRET=${{ secrets.JWT_SECRET }}
             SENDGRID_API_KEY=${{ secrets.SENDGRID_API_KEY }}
+          flags: '--allow-unauthenticated'
 
       # Build and Push Client (Pass Server URL)
       - name: Build and Push Client
@@ -137,6 +138,7 @@ jobs:
           service: ${{ env.CLIENT_SERVICE_NAME }}
           image: gcr.io/${{ env.PROJECT_ID }}/${{ env.CLIENT_SERVICE_NAME }}:${{ github.sha }}
           region: ${{ env.REGION }}
+          flags: '--allow-unauthenticated'
 
       - name: Show Output
         run: |
