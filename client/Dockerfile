@@ -13,6 +13,8 @@ RUN npm install
 COPY . .
 
 # Build the application (Vite builds to /dist by default)
+ARG VITE_API_URL
+ENV VITE_API_URL=$VITE_API_URL
 RUN npm run build
 
 # Stage 2: Serve with Nginx

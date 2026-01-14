@@ -100,12 +100,6 @@ jobs:
             --description="Docker repository" \
             || echo "Repository likely already exists, proceeding..."
 
-      # Build and Push Client
-      - name: Build and Push Client
-        run: |
-          docker build -t gcr.io/${{ env.PROJECT_ID }}/${{ env.CLIENT_SERVICE_NAME }}:${{ github.sha }} ./client
-          docker push gcr.io/${{ env.PROJECT_ID }}/${{ env.CLIENT_SERVICE_NAME }}:${{ github.sha }}
-
       # Build and Push Server
       - name: Build and Push Server
         run: |
@@ -114,6 +108,7 @@ jobs:
 
       # Deploy Server to Cloud Run
       - name: Deploy Server
+        id: deploy-server
         uses: 'google-github-actions/deploy-cloudrun@v2'
         with:
           service: ${{ env.SERVER_SERVICE_NAME }}
@@ -125,10 +120,25 @@ jobs:
             JWT_SECRET=${{ secrets.JWT_SECRET }}
             SENDGRID_API_KEY=${{ secrets.SENDGRID_API_KEY }}
 
+      # Build and Push Client (Pass Server URL)
+      - name: Build and Push Client
+        run: |
+          docker build \
+            --build-arg VITE_API_URL=${{ steps.deploy-server.outputs.url }}/api \
+            -t gcr.io/${{ env.PROJECT_ID }}/${{ env.CLIENT_SERVICE_NAME }}:${{ github.sha }} \
+            ./client
+          docker push gcr.io/${{ env.PROJECT_ID }}/${{ env.CLIENT_SERVICE_NAME }}:${{ github.sha }}
+
       # Deploy Client to Cloud Run
       - name: Deploy Client
+        id: deploy-client
         uses: 'google-github-actions/deploy-cloudrun@v2'
         with:
           service: ${{ env.CLIENT_SERVICE_NAME }}
           image: gcr.io/${{ env.PROJECT_ID }}/${{ env.CLIENT_SERVICE_NAME }}:${{ github.sha }}
           region: ${{ env.REGION }}
+
+      - name: Show Output
+        run: |
+          echo "Server URL: ${{ steps.deploy-server.outputs.url }}"
+          echo "Client URL: ${{ steps.deploy-client.outputs.url }}"
