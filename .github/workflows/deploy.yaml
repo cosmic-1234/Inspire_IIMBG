@@ -119,6 +119,7 @@ jobs:
             DATABASE_URL=${{ secrets.DB_URL }}
             JWT_SECRET=${{ secrets.JWT_SECRET }}
             SENDGRID_API_KEY=${{ secrets.SENDGRID_API_KEY }}
+            SENDGRID_FROM_EMAIL=${{ secrets.SENDGRID_FROM_EMAIL }}
           flags: '--allow-unauthenticated'
 
       # Build and Push Client (Pass Server URL)
