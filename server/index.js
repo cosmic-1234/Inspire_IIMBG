@@ -1,7 +1,10 @@
 const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
+const path = require('path');
 require('dotenv').config();
+const { sequelize } = require('./models');
+const seedUsers = require('./seed_users');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -90,10 +93,10 @@ const syncDatabase = async (retries = 5, delay = 5000) => {
     process.exit(1); // Exit so Docker/Orchestrator can restart it
 };
 
-syncDatabase();
-
-// Start Server
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-    console.log(`Environment: ${process.env.NODE_ENV}`);
+syncDatabase().then(() => {
+    // Start Server
+    app.listen(PORT, () => {
+        console.log(`Server running on port ${PORT}`);
+        console.log(`Environment: ${process.env.NODE_ENV}`);
+    });
 });

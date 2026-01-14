@@ -3,27 +3,33 @@ const bcrypt = require('bcryptjs');
 
 const seedUsers = async () => {
     try {
-        await sequelize.sync({ alter: true });
-
-        const hashedPassword = await bcrypt.hash('password123', 10);
-
-        // 1. Create Admin
-        const adminEmail = 'admin@inspire.com';
-        let admin = await User.findOne({ where: { email: adminEmail } });
-
-        if (!admin) {
-            admin = await User.create({
-                name: 'System Admin',
-                email: adminEmail,
-                password_hash: hashedPassword,
-                role: 'admin'
-            });
-            console.log('Admin user created: admin@inspire.com / password123');
-        } else {
-            console.log('Admin user already exists');
+        // Only sync if running standalone
+        if (require.main === module) {
+            await sequelize.sync({ alter: true });
         }
 
-        // 2. Create Founder
+        const strongPassword = 'Admin@Inspire2025!';
+        const hashedPassword = await bcrypt.hash(strongPassword, 10);
+
+        // 1. Create or Update Admin
+        const adminEmail = 'admin@inspire.com';
+        const adminData = {
+            name: 'System Admin',
+            email: adminEmail,
+            password_hash: hashedPassword,
+            role: 'admin'
+        };
+
+        const existingAdmin = await User.findOne({ where: { email: adminEmail } });
+        if (existingAdmin) {
+            await existingAdmin.update(adminData);
+            console.log(`Admin user updated: ${adminEmail} / ${strongPassword}`);
+        } else {
+            await User.create(adminData);
+            console.log(`Admin user created: ${adminEmail} / ${strongPassword}`);
+        }
+
+        // 2. Create Founder (Only if not exists, to avoid overwriting user data)
         const founderEmail = 'founder@inspire.com';
         let founder = await User.findOne({ where: { email: founderEmail } });
 
@@ -34,7 +40,7 @@ const seedUsers = async () => {
                 password_hash: hashedPassword,
                 role: 'founder'
             });
-            console.log('Founder user created: founder@inspire.com / password123');
+            console.log(`Founder user created: ${founderEmail} / ${strongPassword}`);
 
             // Create a dummy startup for the founder
             await Startup.create({
@@ -49,11 +55,20 @@ const seedUsers = async () => {
             console.log('Founder user already exists');
         }
 
-        process.exit(0);
+        if (require.main === module) {
+            console.log('Seeding completed successfully.');
+            process.exit(0);
+        }
     } catch (error) {
         console.error('Failed to seed users:', error);
-        process.exit(1);
+        if (require.main === module) {
+            process.exit(1);
+        }
     }
 };
 
-seedUsers();
+if (require.main === module) {
+    seedUsers();
+}
+
+module.exports = seedUsers;
