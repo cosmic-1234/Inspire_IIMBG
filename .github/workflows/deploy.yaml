@@ -1,0 +1,122 @@
+name: Deploy to Cloud Run
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+  REGION: us-central1 # Update this if you want a different region
+  CLIENT_SERVICE_NAME: inspire-client
+  SERVER_SERVICE_NAME: inspire-server
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: inspire_db
+        ports:
+          - 5432:5432
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Setup Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      # Install Server Dependencies
+      - name: Install Server Dependencies
+        run: |
+          cd server
+          npm ci
+
+      # Run Integration Tests
+      - name: Run Integration Tests
+        env:
+          PORT: 5000
+          DB_HOST: localhost
+          DB_USER: postgres
+          DB_PASSWORD: postgres
+          DB_NAME: inspire_db
+          JWT_SECRET: testsecret
+        run: |
+          # Start the server in the background
+          cd server
+          npm start &
+          SERVER_PID=$!
+          
+          # Wait for server to be ready (simple sleep or curl check)
+          sleep 10
+          
+          # Run the CI Runner script
+          node tests/ci-runner.js
+          
+          # Kill server
+          kill $SERVER_PID
+
+      # Google Cloud Auth
+      - name: Google Auth
+        id: auth
+        uses: 'google-github-actions/auth@v2'
+        with:
+          credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
+
+      # Setup gcloud CLI
+      - name: Set up Cloud SDK
+        uses: 'google-github-actions/setup-gcloud@v2'
+
+      # Configure Docker to authenticate with Google Artifact Registry / GCR
+      - name: Docker Auth
+        run: |
+          gcloud auth configure-docker
+
+      # Build and Push Client
+      - name: Build and Push Client
+        run: |
+          docker build -t gcr.io/${{ env.PROJECT_ID }}/${{ env.CLIENT_SERVICE_NAME }}:${{ github.sha }} ./client
+          docker push gcr.io/${{ env.PROJECT_ID }}/${{ env.CLIENT_SERVICE_NAME }}:${{ github.sha }}
+
+      # Build and Push Server
+      - name: Build and Push Server
+        run: |
+          docker build -t gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVER_SERVICE_NAME }}:${{ github.sha }} ./server
+          docker push gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVER_SERVICE_NAME }}:${{ github.sha }}
+
+      # Deploy Server to Cloud Run
+      - name: Deploy Server
+        uses: 'google-github-actions/deploy-cloudrun@v2'
+        with:
+          service: ${{ env.SERVER_SERVICE_NAME }}
+          image: gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVER_SERVICE_NAME }}:${{ github.sha }}
+          region: ${{ env.REGION }}
+          env_vars: |
+            NODE_ENV=production
+            DATABASE_URL=${{ secrets.DB_URL }}
+
+      # Deploy Client to Cloud Run
+      - name: Deploy Client
+        uses: 'google-github-actions/deploy-cloudrun@v2'
+        with:
+          service: ${{ env.CLIENT_SERVICE_NAME }}
+          image: gcr.io/${{ env.PROJECT_ID }}/${{ env.CLIENT_SERVICE_NAME }}:${{ github.sha }}
+          region: ${{ env.REGION }}

@@ -1,0 +1,26 @@
+const { Sequelize } = require('sequelize');
+require('dotenv').config();
+
+const sequelize = process.env.DATABASE_URL || process.env.DB_URL
+    ? new Sequelize(process.env.DATABASE_URL || process.env.DB_URL, {
+        dialect: 'postgres',
+        logging: false,
+        dialectOptions: {
+            ssl: {
+                require: true,
+                rejectUnauthorized: false // Required for some managed DBs like Heroku/Neon without custom certs
+            }
+        }
+    })
+    : new Sequelize(
+        process.env.DB_NAME,
+        process.env.DB_USER,
+        process.env.DB_PASSWORD,
+        {
+            host: process.env.DB_HOST,
+            dialect: 'postgres',
+            logging: false,
+        }
+    );
+
+module.exports = sequelize;

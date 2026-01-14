@@ -1,0 +1,232 @@
+{
+  "loginStatus": 200,
+  "tokenReceived": true,
+  "dashboard": {
+    "stats": {
+      "total": 6,
+      "pending": 6,
+      "approved": 0,
+      "rejected": 0
+    },
+    "applications": [
+      {
+        "id": "deb67f87-e371-4333-a762-aa2c4b0ff8a1",
+        "status": "submitted",
+        "submission_data": {
+          "phone": "454545454",
+          "stage": "MVP",
+          "website": "ggg",
+          "industry": "EdTech",
+          "description": "testggg",
+          "founderName": "alex",
+          "startupName": "kaka",
+          "founderEmail": "gggg@gmail.com",
+          "founderPhone": "454545454",
+          "pitch_deck_url": "/uploads/1766769824876-Resume_18-12-2025.pdf"
+        },
+        "createdAt": "2025-12-26T17:23:45.149Z",
+        "updatedAt": "2025-12-26T17:23:45.149Z",
+        "startup_id": "5f42e17b-882c-4f70-baa9-88c6cdb715d6",
+        "program_id": null,
+        "Startup": {
+          "id": "5f42e17b-882c-4f70-baa9-88c6cdb715d6",
+          "name": "kaka",
+          "description": "testggg",
+          "logo_url": "/uploads/1766769824809-Gemini_Generated_Image_4cmv84cmv84cmv84.png",
+          "industry": "EdTech",
+          "stage": "MVP",
+          "website_url": "ggg",
+          "featured": false,
+          "createdAt": "2025-12-26T17:23:45.142Z",
+          "updatedAt": "2025-12-26T17:23:45.142Z",
+          "founder_id": "528086d3-9e66-4264-b47a-75cc825bf802",
+          "User": {
+            "name": "alex",
+            "email": "gggg@gmail.com"
+          }
+        }
+      },
+      {
+        "id": "af55173a-e1ed-4d03-a784-80a551b9bd45",
+        "status": "submitted",
+        "submission_data": {
+          "phone": "1234567890",
+          "stage": "Idea",
+          "website": "https://example.com",
+          "industry": "Tech",
+          "description": "Test description",
+          "founderName": "Test Founder",
+          "startupName": "Test Startup",
+          "founderEmail": "founder@inspire.com",
+          "founderPhone": "1234567890",
+          "pitch_deck_url": "/uploads/1766769741976-pitch.pdf"
+        },
+        "createdAt": "2025-12-26T17:22:22.003Z",
+        "updatedAt": "2025-12-26T17:22:22.003Z",
+        "startup_id": "7d1b1209-0f3d-4d32-be8b-2f7a0d947460",
+        "program_id": null,
+        "Startup": {
+          "id": "7d1b1209-0f3d-4d32-be8b-2f7a0d947460",
+          "name": "NextGen AI",
+          "description": "Revolutionizing the future with AI.",
+          "logo_url": null,
+          "industry": "Tech",
+          "stage": "MVP",
+          "website_url": null,
+          "featured": false,
+          "createdAt": "2025-12-26T17:00:13.667Z",
+          "updatedAt": "2025-12-26T17:00:13.667Z",
+          "founder_id": "932d2a23-a5d3-4b69-806a-b7461455a164",
+          "User": {
+            "name": "Jane Founder",
+            "email": "founder@inspire.com"
+          }
+        }
+      },
+      {
+        "id": "a1ba3f92-5de5-4e9c-8bc6-1fc67279b750",
+        "status": "submitted",
+        "submission_data": {
+          "phone": "1234567890",
+          "stage": "Idea",
+          "website": "https://example.com",
+          "industry": "Tech",
+          "description": "Test description",
+          "founderName": "Test Founder",
+          "startupName": "Test Startup",
+          "founderEmail": "founder@inspire.com",
+          "founderPhone": "1234567890",
+          "pitch_deck_url": "/uploads/1766769259936-pitch.pdf"
+        },
+        "createdAt": "2025-12-26T17:14:20.001Z",
+        "updatedAt": "2025-12-26T17:14:20.001Z",
+        "startup_id": "7d1b1209-0f3d-4d32-be8b-2f7a0d947460",
+        "program_id": null,
+        "Startup": {
+          "id": "7d1b1209-0f3d-4d32-be8b-2f7a0d947460",
+          "name": "NextGen AI",
+          "description": "Revolutionizing the future with AI.",
+          "logo_url": null,
+          "industry": "Tech",
+          "stage": "MVP",
+          "website_url": null,
+          "featured": false,
+          "createdAt": "2025-12-26T17:00:13.667Z",
+          "updatedAt": "2025-12-26T17:00:13.667Z",
+          "founder_id": "932d2a23-a5d3-4b69-806a-b7461455a164",
+          "User": {
+            "name": "Jane Founder",
+            "email": "founder@inspire.com"
+          }
+        }
+      },
+      {
+        "id": "cfdff36d-edfd-418b-a9a9-652e53ecf953",
+        "status": "submitted",
+        "submission_data": {
+          "phone": "123-456-7890",
+          "linkedin": "https://linkedin.com/in/janefounder",
+          "solution": "We are building better AI.",
+          "pitch_deck_url": "/uploads/sample_pitch_deck.pdf",
+          "problem_statement": "The world needs better AI."
+        },
+        "createdAt": "2025-12-26T17:07:55.143Z",
+        "updatedAt": "2025-12-26T17:07:55.143Z",
+        "startup_id": "7d1b1209-0f3d-4d32-be8b-2f7a0d947460",
+        "program_id": null,
+        "Startup": {
+          "id": "7d1b1209-0f3d-4d32-be8b-2f7a0d947460",
+          "name": "NextGen AI",
+          "description": "Revolutionizing the future with AI.",
+          "logo_url": null,
+          "industry": "Tech",
+          "stage": "MVP",
+          "website_url": null,
+          "featured": false,
+          "createdAt": "2025-12-26T17:00:13.667Z",
+          "updatedAt": "2025-12-26T17:00:13.667Z",
+          "founder_id": "932d2a23-a5d3-4b69-806a-b7461455a164",
+          "User": {
+            "name": "Jane Founder",
+            "email": "founder@inspire.com"
+          }
+        }
+      },
+      {
+        "id": "1818675d-0f2c-466a-8316-b32420fc0d6f",
+        "status": "submitted",
+        "submission_data": {
+          "phone": "9527601938",
+          "stage": "Early Revenue",
+          "website": "",
+          "industry": "HealthTech",
+          "description": "",
+          "founderName": "Shrirang Wanikar",
+          "startupName": "Sexstartup",
+          "founderEmail": "shrirangswanikar@gmail.com",
+          "founderPhone": "9527601938",
+          "pitch_deck_url": "/uploads/1766766315392-Resume_18-12-2025.pdf"
+        },
+        "createdAt": "2025-12-26T16:25:15.764Z",
+        "updatedAt": "2025-12-26T16:25:15.764Z",
+        "startup_id": "80c31f22-1512-4cf8-9ef9-223ebdb4b600",
+        "program_id": null,
+        "Startup": {
+          "id": "80c31f22-1512-4cf8-9ef9-223ebdb4b600",
+          "name": "Sexstartup",
+          "description": "",
+          "logo_url": "/uploads/1766766315380-1691207256781.jpeg",
+          "industry": "HealthTech",
+          "stage": "Early Revenue",
+          "website_url": "",
+          "featured": false,
+          "createdAt": "2025-12-26T16:25:15.736Z",
+          "updatedAt": "2025-12-26T16:25:15.736Z",
+          "founder_id": "0068b251-b425-4111-a0c5-c199308d6f72",
+          "User": {
+            "name": "Shrirang Wanikar",
+            "email": "shrirangswanikar@gmail.com"
+          }
+        }
+      },
+      {
+        "id": "f08ba6e2-5735-4ba7-ae41-3d363fa17cfe",
+        "status": "submitted",
+        "submission_data": {
+          "phone": "123",
+          "stage": "Idea",
+          "industry": "Tech",
+          "description": "Desc",
+          "founderName": "Test",
+          "startupName": "TestStartup",
+          "founderEmail": "test@test.com",
+          "founderPhone": "123",
+          "pitch_deck_url": null
+        },
+        "createdAt": "2025-12-26T16:24:42.123Z",
+        "updatedAt": "2025-12-26T16:24:42.123Z",
+        "startup_id": "a30ba05d-e551-40bb-96c6-194133e997c5",
+        "program_id": null,
+        "Startup": {
+          "id": "a30ba05d-e551-40bb-96c6-194133e997c5",
+          "name": "TestStartup",
+          "description": "Desc",
+          "logo_url": null,
+          "industry": "Tech",
+          "stage": "Idea",
+          "website_url": null,
+          "featured": false,
+          "createdAt": "2025-12-26T16:24:42.111Z",
+          "updatedAt": "2025-12-26T16:24:42.111Z",
+          "founder_id": "6e100be7-75cf-4b50-abcb-0faa5ec80ac9",
+          "User": {
+            "name": "Test",
+            "email": "test@test.com"
+          }
+        }
+      }
+    ]
+  },
+  "error": null,
+  "dashboardStatus": 200
+}
