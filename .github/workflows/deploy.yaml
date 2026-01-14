@@ -115,11 +115,13 @@ jobs:
           image: gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVER_SERVICE_NAME }}:${{ github.sha }}
           region: ${{ env.REGION }}
           env_vars: |
-            NODE_ENV=production
-            DATABASE_URL=${{ secrets.DB_URL }}
+            GCP_PROJECT_ID=${{ secrets.GCP_PROJECT_ID }}
+            DB_URL=${{ secrets.DB_URL }}
             JWT_SECRET=${{ secrets.JWT_SECRET }}
             SENDGRID_API_KEY=${{ secrets.SENDGRID_API_KEY }}
             SENDGRID_FROM_EMAIL=${{ secrets.SENDGRID_FROM_EMAIL }}
+            GCLOUD_STORAGE_BUCKET=${{ secrets.GCLOUD_STORAGE_BUCKET }}
+            NODE_ENV=productionauthenticated'
           flags: '--allow-unauthenticated'
 
       # Build and Push Client (Pass Server URL)

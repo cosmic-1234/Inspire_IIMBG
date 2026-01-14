@@ -5,16 +5,10 @@ const path = require('path');
 const { User, Startup, Application, sequelize } = require('../models');
 const bcrypt = require('bcryptjs');
 const { sendWelcomeEmail } = require('../services/emailService');
+const { uploadFile } = require('../services/cloudStorage');
 
-// Configure Multer for file uploads
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'uploads/');
-    },
-    filename: (req, file, cb) => {
-        cb(null, `${Date.now()}-${file.originalname}`);
-    }
-});
+// Configure Multer for memory storage (files held in memory for upload to GCS)
+const storage = multer.memoryStorage();
 
 const upload = multer({
     storage: storage,
@@ -27,8 +21,26 @@ router.post('/', upload.fields([
     { name: 'pitchDeck', maxCount: 1 }
 ]), async (req, res) => {
     console.log('Received application submission');
-    console.log('Body:', req.body);
-    console.log('Files:', req.files);
+
+    // Upload files to GCS
+    let logoUrl = null;
+    let pitchDeckUrl = null;
+
+    try {
+        if (req.files && req.files['logo']) {
+            logoUrl = await uploadFile(req.files['logo'][0]);
+            console.log('Logo uploaded:', logoUrl);
+        }
+
+        if (req.files && req.files['pitchDeck']) {
+            pitchDeckUrl = await uploadFile(req.files['pitchDeck'][0]);
+            console.log('Pitch Deck uploaded:', pitchDeckUrl);
+        }
+    } catch (uploadError) {
+        console.error('File Upload Failed:', uploadError);
+        return res.status(500).json({ error: 'File upload failed', details: uploadError.message });
+    }
+
     const t = await sequelize.transaction();
 
     try {
@@ -68,8 +80,6 @@ router.post('/', upload.fields([
         // Check if user already has a startup
         let startup = await Startup.findOne({ where: { founder_id: user.id } });
 
-        const logoPath = req.files['logo'] ? `/uploads/${req.files['logo'][0].filename}` : null;
-
         if (startup) {
             console.log(`Using existing startup for founder ${founderEmail}`);
         } else {
@@ -79,20 +89,18 @@ router.post('/', upload.fields([
                 industry: industry,
                 stage: stage,
                 website_url: website,
-                logo_url: logoPath,
+                logo_url: logoUrl, // Use the GCS URL
                 founder_id: user.id
             }, { transaction: t });
         }
 
         // 3. Create Application
-        const pitchDeckPath = req.files['pitchDeck'] ? `/uploads/${req.files['pitchDeck'][0].filename}` : null;
-
         const application = await Application.create({
             startup_id: startup.id,
             program_id: null,
             status: 'submitted',
             submission_data: {
-                pitch_deck_url: pitchDeckPath,
+                pitch_deck_url: pitchDeckUrl, // Use the GCS URL
                 phone: founderPhone,
                 ...req.body
             }
