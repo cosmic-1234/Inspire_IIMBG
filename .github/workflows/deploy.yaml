@@ -90,6 +90,16 @@ jobs:
         run: |
           gcloud auth configure-docker
 
+      # Ensure Artifact Registry Repository Exists
+      - name: Create Artifact Registry Repository
+        run: |
+          gcloud artifacts repositories create gcr.io \
+            --project=${{ env.PROJECT_ID }} \
+            --repository-format=docker \
+            --location=us \
+            --description="Docker repository" \
+            || echo "Repository likely already exists, proceeding..."
+
       # Build and Push Client
       - name: Build and Push Client
         run: |
