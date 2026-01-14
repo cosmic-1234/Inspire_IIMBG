@@ -13,10 +13,9 @@ async function runCI() {
         // 2. Seed Admin User
         const hashedPassword = await bcrypt.hash('password123', 10);
         await User.create({
-            firstName: 'Admin',
-            lastName: 'User',
+            name: 'Admin User',
             email: 'admin@inspire.com',
-            password: hashedPassword,
+            password_hash: hashedPassword,
             role: 'admin',
             isVerified: true
         });
