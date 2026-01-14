@@ -89,6 +89,18 @@ const getWelcomeEmailTemplate = (name, email, password) => {
             text-align: center;
             font-size: 12px;
             color: #94a3b8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <!-- Use a public URL for the logo in production -->
+            <h1>Welcome to Inspire</h1>
+        </div>
+        <div class="content">
+            <div class="greeting">Hello ${name},</div>
+            <div class="message">
                 An account has been created for you to track your application status and manage your startup profile. Please use the credentials below to log in to your dashboard.
             </div>
             
@@ -104,7 +116,7 @@ const getWelcomeEmailTemplate = (name, email, password) => {
             </div>
 
             <div style="text-align: center;">
-                <a href="http://localhost:5173/login" class="cta-button">Login to Dashboard</a>
+                <a href="${process.env.CLIENT_URL || 'http://localhost:5173'}/login" class="cta-button">Login to Dashboard</a>
             </div>
             
             <div class="message" style="margin-top: 30px; font-size: 14px; color: #64748b;">
