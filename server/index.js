@@ -73,8 +73,7 @@ app.get('/', (req, res) => {
 });
 
 // Database Sync
-const { sequelize } = require('./models');
-
+// Database Sync
 const syncDatabase = async (retries = 5, delay = 5000) => {
     for (let i = 0; i < retries; i++) {
         try {
@@ -93,7 +92,17 @@ const syncDatabase = async (retries = 5, delay = 5000) => {
     process.exit(1); // Exit so Docker/Orchestrator can restart it
 };
 
-syncDatabase().then(() => {
+syncDatabase().then(async () => {
+    // Audit: Run seeders to ensure admin user exists
+    try {
+        await seedUsers();
+    } catch (error) {
+        console.error('Startup seeding failed:', error);
+        // Continue starting server even if seeding fails? 
+        // Probably yes, to avoid update loops on minor errors, 
+        // but logging is critical.
+    }
+
     // Start Server
     app.listen(PORT, () => {
         console.log(`Server running on port ${PORT}`);
