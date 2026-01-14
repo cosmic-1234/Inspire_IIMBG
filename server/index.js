@@ -85,35 +85,40 @@ app.get('/', (req, res) => {
 const syncDatabase = async (retries = 5, delay = 5000) => {
     for (let i = 0; i < retries; i++) {
         try {
-            await sequelize.sync({ alter: true });
-            console.log('Database synced');
-            return;
-        } catch (err) {
-            console.error(`Failed to sync database (attempt ${i + 1}/${retries}):`, err.message);
-            if (i < retries - 1) {
-                console.log(`Retrying in ${delay / 1000} seconds...`);
-                await new Promise(res => setTimeout(res, delay));
+            try {
+                // FORCE TRUE: Flushes data on every startup (Use cautiously!)
+                await sequelize.sync({ force: true });
+                console.log('Database synced (FORCE RESET)');
+                return;
+            } catch (err) {
+                console.log('Database synced');
+                return;
+            } catch (err) {
+                console.error(`Failed to sync database (attempt ${i + 1}/${retries}):`, err.message);
+                if (i < retries - 1) {
+                    console.log(`Retrying in ${delay / 1000} seconds...`);
+                    await new Promise(res => setTimeout(res, delay));
+                }
             }
         }
-    }
     console.error('Could not connect to database after multiple attempts. Exiting.');
-    process.exit(1); // Exit so Docker/Orchestrator can restart it
-};
+        process.exit(1); // Exit so Docker/Orchestrator can restart it
+    };
 
-syncDatabase().then(async () => {
-    // Audit: Run seeders to ensure admin user exists
-    try {
-        await seedUsers();
-    } catch (error) {
-        console.error('Startup seeding failed:', error);
-        // Continue starting server even if seeding fails? 
-        // Probably yes, to avoid update loops on minor errors, 
-        // but logging is critical.
-    }
+    syncDatabase().then(async () => {
+        // Audit: Run seeders to ensure admin user exists
+        try {
+            await seedUsers();
+        } catch (error) {
+            console.error('Startup seeding failed:', error);
+            // Continue starting server even if seeding fails? 
+            // Probably yes, to avoid update loops on minor errors, 
+            // but logging is critical.
+        }
 
-    // Start Server
-    app.listen(PORT, () => {
-        console.log(`Server running on port ${PORT}`);
-        console.log(`Environment: ${process.env.NODE_ENV}`);
+        // Start Server
+        app.listen(PORT, () => {
+            console.log(`Server running on port ${PORT}`);
+            console.log(`Environment: ${process.env.NODE_ENV}`);
+        });
     });
-});

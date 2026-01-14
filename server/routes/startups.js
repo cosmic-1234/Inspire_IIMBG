@@ -1,11 +1,17 @@
 const express = require('express');
 const router = express.Router();
-const { Startup } = require('../models');
+const { Startup, Application } = require('../models');
 
-// Get all startups
+// Get all startups (Only accepted ones)
 router.get('/', async (req, res) => {
     try {
-        const startups = await Startup.findAll();
+        const startups = await Startup.findAll({
+            include: [{
+                model: Application,
+                where: { status: 'accepted' },
+                attributes: [] // Don't return application data, just filter
+            }]
+        });
         res.json(startups);
     } catch (err) {
         res.status(500).json({ error: err.message });
